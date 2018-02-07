@@ -8,36 +8,37 @@
 #endif // !__BYTEOFFSET
 
 // masks to extract bit k
-#ifndef __BIT0MASK
-#define __BIT0MASK 0x01
-#endif // !__BIT0MASK
-#ifndef __BIT1MASK
-#define __BIT1MASK 0x02
-#endif // !__BIT1MASK
-#ifndef __BIT2MASK
-#define __BIT2MASK 0x04
-#endif // !__BIT2MASK
-#ifndef __BIT3MASK
-#define __BIT3MASK 0x08
-#endif // !__BIT3MASK
-#ifndef __BIT4MASK
-#define __BIT4MASK 0x10
-#endif // !__BIT4MASK
-#ifndef __BIT5MASK
-#define __BIT5MASK 0x20
-#endif // !__BIT5MASK
-#ifndef __BIT6MASK
-#define __BIT6MASK 0x40
-#endif // !__BIT6MASK
-#ifndef __BIT7MASK
-#define __BIT7MASK 0x80
-#endif // !__BIT7MASK
+#ifndef __BITMASKS
+#define __BITMASKS
+
+#define __SETBIT0MASK 0x01
+#define __SETBIT1MASK 0x02
+#define __SETBIT2MASK 0x04
+#define __SETBIT3MASK 0x08
+#define __SETBIT4MASK 0x10
+#define __SETBIT5MASK 0x20
+#define __SETBIT6MASK 0x40
+#define __SETBIT7MASK 0x80
+
+#define __RESETBIT0MASK ~__SETBIT0MASK
+#define __RESETBIT1MASK ~__SETBIT1MASK
+#define __RESETBIT2MASK ~__SETBIT2MASK
+#define __RESETBIT3MASK ~__SETBIT3MASK
+#define __RESETBIT4MASK ~__SETBIT4MASK
+#define __RESETBIT5MASK ~__SETBIT5MASK
+#define __RESETBIT6MASK ~__SETBIT6MASK
+#define __RESETBIT7MASK ~__SETBIT7MASK
+
+#endif // !__BITMASKS
 
 
 #ifndef __BITSET_T
 
 #define __BITSET_T
 
+#include <string>
+
+using namespace std;
 
 class Bitset
 {
@@ -46,11 +47,11 @@ private:
 	int size;
 	char * set;
 
-	int getBitAt(int i, int j);
-
 	bool testBit(int i, int j);
 
-	int countCharsInFile(std::string s_fileName);
+	int countCharsInFile(string s_fileName);
+
+	int bitsToBytes(int bits);
 
 public:
 	Bitset(char ** ca_matrix, int i_size); // square matrix of size size
@@ -59,7 +60,9 @@ public:
 
 	Bitset(int i_size); // size is the number of bits to store
 
-	Bitset(std::string s_fileName); // builds a bitset from the data in the file named s_fileName
+	Bitset(string s_fileName); // builds a bitset from the data in the file named s_fileName
+
+	~Bitset(void);
 
 	int operator()(int i, int j); // retrieves the bit located in the ith byte, at the offset j
 	int operator[](int i); // retrieves the ith bit in the set
@@ -69,9 +72,9 @@ public:
 
 	void resize(int i_size); // resizes the bitset to the new size
 
-	void writeSetToFile(std::string s_fileName); // writes this bitset to the file named s_fileName
+	void writeSetToFile(string s_fileName); // writes this bitset to the file named s_fileName
 
-	friend ofstream& operator<<(ofstream&, Bitset); // stream insertion operator for outputting bitset
+	//friend ofstream& operator<<(ofstream&, Bitset&); // stream insertion operator for outputting bitset
 }; // end Class Bitset
 
 
