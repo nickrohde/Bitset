@@ -27,7 +27,7 @@ Bitset::Bitset(std::string s_fileName)
 
 	if (temp <= 0)
 	{
-		throw new invalid_argument("Cannot construct bitset of size 0.");
+		throw new invalid_argument("Size must be >0.");
 	} // end if
 
 	ifstream file(s_fileName.c_str());
@@ -50,25 +50,21 @@ Bitset::Bitset(std::string s_fileName)
 	} // end if
 
 	file.close();
-
 }// end Constructor(string, int)
 
 
-Bitset::Bitset(char ** matrix, int size) : Bitset(matrix, size, size) {}
-
-
-Bitset::Bitset(char ** matrix, int rows, int cols) : Bitset(rows*cols)
+Bitset::Bitset(char ** matrix, int size) : Bitset(size*size)
 {
-	if (rows <= 0 || cols <= 0)
+	if (size <= 0)
 	{
 		throw new invalid_argument("Invalid size received.");
 	} // end if
 
 	int counter = 0;
 
-	for (int i = 0; i < rows; i++)
+	for (int i = 0; i < size; i++)
 	{
-		for (int j = 0; j < cols; j++)
+		for (int j = 0; j < size; j++)
 		{
 			char temp = matrix[i][j];
 
@@ -84,7 +80,7 @@ Bitset::Bitset(char ** matrix, int rows, int cols) : Bitset(rows*cols)
 			counter++;
 		} // end for j
 	} // end for i
-} // end Constructor(char**, int, int)                                 
+} // end Constructor(char**,int)                              
 
 
 Bitset::Bitset(Bitset &other)
@@ -109,16 +105,24 @@ Bitset::~Bitset(void)
 
 int Bitset::operator()(int i, int j)
 {
-	int row = bitsPerRow * i;
-	int _byte = bitsToBytes(row);
+	int _byte    = (i * bitsPerRow) / __BYTEOFFSET;
+	int rowStart = (i * bitsPerRow) % __BYTEOFFSET;
+	int _bit = rowStart + j;
+
+	// in case the bit is actually in the next bytes in the row
+	while (_bit > 7)
+	{
+		_byte++;
+		_bit -= 8;
+	} // end
 	
-	if (testBit(_byte, j))
+	if (testBit(_byte, _bit))
 	{
 		return 1;
 	} // end if
 
 	return 0;
-} // end operator()
+} // end operator()                                                 
 
 
 int Bitset::operator[](int i)
